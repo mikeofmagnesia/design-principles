@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design Principles</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #F7F8FA;
+      --surface: #FFFFFF;
+      --surface-2: #F1F3F6;
+      --text-primary: #0D1117;
+      --text-secondary: #5C6370;
+      --text-muted: #9AA3AF;
+      --border: #E4E7EC;
+      --border-strong: #CDD2DA;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      --transition: 180ms ease;
+
+      --c-easy: #2563EB;
+      --c-easy-bg: #EFF6FF;
+      --c-scalable: #059669;
+      --c-scalable-bg: #ECFDF5;
+      --c-trustworthy: #7C3AED;
+      --c-trustworthy-bg: #F5F3FF;
+      --c-delightful: #D97706;
+      --c-delightful-bg: #FFFBEB;
+      --c-informed: #DC2626;
+      --c-informed-bg: #FEF2F2;
+      --c-open: #0891B2;
+      --c-open-bg: #ECFEFF;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      height: 56px;
+    }
+
+    .brand {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .brand span {
+      color: var(--text-primary);
+    }
+
+    .principle-nav {
+      display: flex;
+      gap: 4px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      flex: 1;
+    }
+
+    .principle-nav::-webkit-scrollbar { display: none; }
+
+    .nav-pill {
+      flex-shrink: 0;
+      padding: 6px 14px;
+      border-radius: 99px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      transition: background var(--transition), color var(--transition);
+      white-space: nowrap;
+    }
+
+    .nav-pill:hover {
+      background: var(--surface-2);
+      color: var(--text-primary);
+    }
+
+    .nav-pill.active {
+      background: var(--text-primary);
+      color: #fff;
+    }
+
+    .hero {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 72px 32px 48px;
+    }
+
+    .hero-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .hero-label::before {
+      content: '';
+      display: block;
+      width: 20px;
+      height: 1.5px;
+      background: var(--text-muted);
+    }
+
+    .hero h1 {
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      color: var(--text-primary);
+      max-width: 640px;
+      margin-bottom: 20px;
+    }
+
+    .hero-subtitle {
+      font-size: 17px;
+      color: var(--text-secondary);
+      max-width: 560px;
+      line-height: 1.65;
+      margin-bottom: 48px;
+    }
+
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    @media (max-width: 768px) {
+      .overview-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 480px) {
+      .overview-grid { grid-template-columns: 1fr; }
+    }
+
+    .overview-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      cursor: pointer;
+      transition: box-shadow var(--transition), transform var(--transition), border-color var(--transition);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      text-align: left;
+    }
+
+    .overview-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-1px);
+    }
+
+    .overview-card-num {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .overview-card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .overview-card-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .main-layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 32px 96px;
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .main-layout { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 80px;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background var(--transition);
+      border: none;
+      background: transparent;
+      text-align: left;
+      width: 100%;
+    }
+
+    .sidebar-item:hover { background: var(--surface-2); }
+
+    .sidebar-item.active {
+      background: var(--surface);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .sidebar-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .sidebar-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .sidebar-item.active .sidebar-label {
+      color: var(--text-primary);
+    }
+
+    .content-area { min-width: 0; }
+
+    .principle-panel { display: none; }
+
+    .principle-panel.active { display: block; }
+
+    .principle-header {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 32px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      margin-bottom: 24px;
+    }
+
+    .principle-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      padding: 4px 10px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .principle-title {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      color: var(--text-primary);
+    }
+
+    .principle-desc {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      max-width: 680px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      margin-top: 32px;
+    }
+
+    .criteria-group { margin-bottom: 16px; }
+
+    .criteria-group-header {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      padding: 14px 16px;
+      background: var(--surface-2);
+      border-radius: var(--radius-md);
+      margin-bottom: 2px;
+      letter-spacing: -0.01em;
+    }
+
+    .criterion {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      margin-bottom: 4px;
+      overflow: hidden;
+    }
+
+    .criterion-trigger {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+      transition: background var(--transition);
+    }
+
+    .criterion-trigger:hover { background: var(--bg); }
+
+    .criterion-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .criterion-text {
+      flex: 1;
+      font-size: 13.5px;
+      color: var(--text-primary);
+      font-weight: 400;
+      line-height: 1.5;
+    }
+
+    .criterion-chevron {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      transition: transform var(--transition);
+      color: var(--text-muted);
+    }
+
+    .criterion.open .criterion-chevron { transform: rotate(180deg); }
+
+    .criterion-body {
+      display: none;
+      padding: 0 16px 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .criterion.open .criterion-body { display: block; }
+
+    .criterion-rubric {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 600px) {
+      .criterion-rubric { grid-template-columns: 1fr; }
+    }
+
+    .rubric-cell {
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      font-size: 12px;
+    }
+
+    .rubric-score {
+      font-weight: 700;
+      font-size: 18px;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .rubric-label {
+      font-weight: 600;
+      font-size: 11px;
+      letter-spacing: 0.03em;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .rubric-desc {
+      font-size: 11px;
+      line-height: 1.4;
+      color: var(--text-secondary);
+    }
+
+    .score-1 { background: #FEF2F2; border: 1px solid #FECACA; }
+    .score-1 .rubric-score, .score-1 .rubric-label { color: #DC2626; }
+    .score-2 { background: #FFF7ED; border: 1px solid #FED7AA; }
+    .score-2 .rubric-score, .score-2 .rubric-label { color: #EA580C; }
+    .score-3 { background: #FEFCE8; border: 1px solid #FEF08A; }
+    .score-3 .rubric-score, .score-3 .rubric-label { color: #CA8A04; }
+    .score-4 { background: #F0FDF4; border: 1px solid #BBF7D0; }
+    .score-4 .rubric-score, .score-4 .rubric-label { color: #16A34A; }
+    .score-5 { background: #EFF6FF; border: 1px solid #BFDBFE; }
+    .score-5 .rubric-score, .score-5 .rubric-label { color: #2563EB; }
+
+    .rubric-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 32px 96px;
+    }
+
+    .rubric-section-header { margin-bottom: 24px; }
+
+    .rubric-section-title {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .rubric-section-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      max-width: 560px;
+    }
+
+    .rubric-scale {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+
+    @media (max-width: 768px) {
+      .rubric-scale { grid-template-columns: 1fr; }
+    }
+
+    .scale-card {
+      padding: 20px;
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .scale-num {
+      font-size: 40px;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .scale-name {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .scale-meaning { font-size: 12px; line-height: 1.5; }
+
+    .scale-1 { background: #FEF2F2; border: 1px solid #FECACA; }
+    .scale-1 .scale-num, .scale-1 .scale-name { color: #DC2626; }
+    .scale-1 .scale-meaning { color: #B91C1C; }
+    .scale-2 { background: #FFF7ED; border: 1px solid #FED7AA; }
+    .scale-2 .scale-num, .scale-2 .scale-name { color: #EA580C; }
+    .scale-2 .scale-meaning { color: #C2410C; }
+    .scale-3 { background: #FEFCE8; border: 1px solid #FEF08A; }
+    .scale-3 .scale-num, .scale-3 .scale-name { color: #CA8A04; }
+    .scale-3 .scale-meaning { color: #A16207; }
+    .scale-4 { background: #F0FDF4; border: 1px solid #BBF7D0; }
+    .scale-4 .scale-num, .scale-4 .scale-name { color: #16A34A; }
+    .scale-4 .scale-meaning { color: #15803D; }
+    .scale-5 { background: #EFF6FF; border: 1px solid #BFDBFE; }
+    .scale-5 .scale-num, .scale-5 .scale-name { color: #2563EB; }
+    .scale-5 .scale-meaning { color: #1D4ED8; }
+
+    .how-to-use {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+
+    @media (max-width: 768px) {
+      .how-to-use { grid-template-columns: 1fr; }
+    }
+
+    .how-step-num {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .how-step-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+    .how-step-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .site-footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 32px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .principle-panel.active {
+      animation: fadeIn 200ms ease both;
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">Product <span>Design Principles</span></div>
+    <nav class="principle-nav" role="tablist">
+      <button class="nav-pill active" data-target="easy" role="tab">Be Easy</button>
+      <button class="nav-pill" data-target="scalable" role="tab">Be Scalable</button>
+      <button class="nav-pill" data-target="trustworthy" role="tab">Be Trustworthy</button>
+      <button class="nav-pill" data-target="delightful" role="tab">Be Delightful</button>
+      <button class="nav-pill" data-target="informed" role="tab">Be Informed</button>
+      <button class="nav-pill" data-target="open" role="tab">Be Open &amp; Connected</button>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-label">Design System</div>
+  <h1>Six Principles for Product Design</h1>
+  <p class="hero-subtitle">A shared framework for evaluating, aligning, and advancing the quality of experience across every product.</p>
+
+  <div class="overview-grid">
+    <div class="overview-card" data-target="easy">
+      <span class="overview-card-num" style="color:var(--c-easy)">01 &mdash; Be Easy</span>
+      <span class="overview-card-title">Intuitive</span>
+      <span class="overview-card-sub">Simplify interactions, reduce cognitive load, guide users through the easiest path.</span>
+    </div>
+    <div class="overview-card" data-target="scalable">
+      <span class="overview-card-num" style="color:var(--c-scalable)">02 &mdash; Be Scalable</span>
+      <span class="overview-card-title">Build to Scale</span>
+      <span class="overview-card-sub">Design cohesive interfaces that grow with users, the ecosystem, and the industry.</span>
+    </div>
+    <div class="overview-card" data-target="trustworthy">
+      <span class="overview-card-num" style="color:var(--c-trustworthy)">03 &mdash; Be Trustworthy</span>
+      <span class="overview-card-title">Always Communicate</span>
+      <span class="overview-card-sub">Promote clarity, inclusivity, and accessibility to foster trust and transparency.</span>
+    </div>
+    <div class="overview-card" data-target="delightful">
+      <span class="overview-card-num" style="color:var(--c-delightful)">04 &mdash; Be Delightful</span>
+      <span class="overview-card-title">Engaging</span>
+      <span class="overview-card-sub">Encourage bold, creative solutions and push the boundaries of what interfaces can be.</span>
+    </div>
+    <div class="overview-card" data-target="informed">
+      <span class="overview-card-num" style="color:var(--c-informed)">05 &mdash; Be Informed</span>
+      <span class="overview-card-title">Listen &amp; Learn</span>
+      <span class="overview-card-sub">Design with continuous learning from user interactions and behaviors in mind.</span>
+    </div>
+    <div class="overview-card" data-target="open">
+      <span class="overview-card-num" style="color:var(--c-open)">06 &mdash; Be Open &amp; Connected</span>
+      <span class="overview-card-title">Interoperability</span>
+      <span class="overview-card-sub">Ensure products connect seamlessly with cloud services, APIs, and third-party tools.</span>
+    </div>
+  </div>
+</section>
+
+<div class="main-layout">
+  <aside class="sidebar">
+    <nav class="sidebar-nav">
+      <button class="sidebar-item active" data-target="easy">
+        <span class="sidebar-dot" style="background:var(--c-easy)"></span>
+        <span class="sidebar-label">Be Easy</span>
+      </button>
+      <button class="sidebar-item" data-target="scalable">
+        <span class="sidebar-dot" style="background:var(--c-scalable)"></span>
+        <span class="sidebar-label">Be Scalable</span>
+      </button>
+      <button class="sidebar-item" data-target="trustworthy">
+        <span class="sidebar-dot" style="background:var(--c-trustworthy)"></span>
+        <span class="sidebar-label">Be Trustworthy</span>
+      </button>
+      <button class="sidebar-item" data-target="delightful">
+        <span class="sidebar-dot" style="background:var(--c-delightful)"></span>
+        <span class="sidebar-label">Be Delightful</span>
+      </button>
+      <button class="sidebar-item" data-target="informed">
+        <span class="sidebar-dot" style="background:var(--c-informed)"></span>
+        <span class="sidebar-label">Be Informed</span>
+      </button>
+      <button class="sidebar-item" data-target="open">
+        <span class="sidebar-dot" style="background:var(--c-open)"></span>
+        <span class="sidebar-label">Be Open &amp; Connected</span>
+      </button>
+    </nav>
+  </aside>
+
+  <main class="content-area" role="main">
+
+    <!-- BE EASY -->
+    <div class="principle-panel active" id="panel-easy">
+      <div class="principle-header">
+        <span class="principle-tag" style="background:var(--c-easy-bg); color:var(--c-easy)">01 &mdash; Be Easy</span>
+        <h2 class="principle-title">Intuitive</h2>
+        <p class="principle-desc">Simplify content and interactions and enable collaboration between AI and humans by focusing on usability and guiding users through the easiest paths to get a job done. Create lightweight, intuitive, straightforward interfaces to reduce cognitive load and facilitate efficient interactions, including AI-enabled ones. Subtly suggest actions, streamline workflows, and personalize content.</p>
+      </div>
+
+      <div class="section-label">Evaluation Criteria</div>
+
+      <div class="criteria-group">
+        <div class="criteria-group-header">Intuitiveness</div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-easy-bg); color:var(--c-easy)">1</span>
+            <span class="criterion-text">Is the feature easy to understand and use without extensive documentation?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">Feature requires documentation to accomplish even basic tasks.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">Most flows are confusing without guidance; key actions are hard to discover.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">Most users can complete core tasks unaided, but edge cases cause confusion.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">Feature is clearly discoverable and self-explanatory across all primary flows.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">Feature feels immediately obvious; users can complete tasks faster than expected.</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-easy-bg); color:var(--c-easy)">2</span>
+            <span class="criterion-text">Does the system adapt workflows, settings, or recommendations based on user behavior and history?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">No adaptation; every session feels identical regardless of prior use.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">Minimal adaptation; only basic recency or preferences are retained.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">Session context is maintained; some history informs defaults or suggestions.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">System personalizes recommendations and surfaces relevant shortcuts based on history.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">Proactive, intelligent adaptation makes workflows meaningfully faster for repeat users.</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-easy-bg); color:var(--c-easy)">3</span>
+            <span class="criterion-text">Are error messages clear and does the feature provide recovery paths?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">Errors are cryptic or absent; users have no idea what went wrong.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">Errors exist but are technical, vague, or don't suggest next steps.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">Errors are human-readable and convey what happened, but recovery paths are limited.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">Errors are clear with actionable recovery steps or alternative phrasing suggestions.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">Errors are proactively prevented; when they occur, recovery is instant and guided.</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-easy-bg); color:var(--c-easy)">4</span>
+            <span class="criterion-text">Is the user flow clearly connected by copy, resulting in a cohesive experience?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">Copy is inconsistent, confusing, or actively misleads users between steps.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">Some screens feel disconnected; terminology shifts between features or views.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">Copy is largely consistent; most transitions feel connected and expected.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">Copy creates a cohesive narrative that guides users confidently through each step.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">Copy is a seamless thread through the flow; each step builds naturally on the last.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="criteria-group">
+        <div class="criteria-group-header">Task Efficiency</div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-easy-bg); color:var(--c-easy)">5</span>
+            <span class="criterion-text">Does the feature minimize the number of steps required to complete a task?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">Tasks require far more steps than necessary; significant friction at every stage.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">Core paths are inefficient; several unnecessary steps or context switches.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">Primary tasks are streamlined; secondary flows still have some unnecessary steps.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">Feature consistently reduces steps across all flows; minimal extraneous actions.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">Tasks are completed in the fewest possible steps; shortcuts and smart defaults abound.</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-easy-bg); color:var(--c-easy)">6</span>
+            <span class="criterion-text">Does it provide recommendations, onboarding hints, or step-by-step guidance?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">No onboarding or guidance; users are dropped into the feature without support.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">Guidance exists but is generic, hard to find, or not contextual to the user's state.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">Basic hints or sample prompts are available and accessible at the right moment.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">Guidance is contextual and role-aware; suggestions feel tailored to the user's situation.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">Guidance is proactive, dynamic, and adapts based on the user's history and real-world use cases.</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-easy-bg); color:var(--c-easy)">7</span>
+            <span class="criterion-text">Are steps clearly connected through copy that helps users complete tasks confidently?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">Users frequently feel lost or unsure what to do next.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">Some transitions are unclear; users often need to guess or backtrack.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">Most steps are clearly signposted; users progress with minimal hesitation.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">Every step is clearly connected; copy confirms success and points to what's next.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">Users feel guided and confident throughout; next steps are always obvious and inviting.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BE SCALABLE -->
+    <div class="principle-panel" id="panel-scalable">
+      <div class="principle-header">
+        <span class="principle-tag" style="background:var(--c-scalable-bg); color:var(--c-scalable)">02 &mdash; Be Scalable</span>
+        <h2 class="principle-title">Build to Scale</h2>
+        <p class="principle-desc">Gain leverage by designing cohesive interfaces that can grow with our users, within our ecosystem, and with our industry. There should be no isolated features, functionality, or experiences.</p>
+      </div>
+      <div class="section-label">Evaluation Criteria</div>
+      <div class="criteria-group">
+        <div class="criteria-group-header">Consistency Across the Product</div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-scalable-bg); color:var(--c-scalable)">1</span>
+            <span class="criterion-text">Does it align with other features in terms of behavior and UI patterns?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">Completely inconsistent with the rest of the product; feels like a different app.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">Several UI patterns deviate from established product conventions.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">Generally aligned; minor deviations in layout or interaction patterns.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">Consistent with visual language and interaction patterns across the product.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">Sets a new standard; patterns are reusable and extend the design system.</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-scalable-bg); color:var(--c-scalable)">2</span>
+            <span class="criterion-text">Can the feature handle large-scale data and concurrent users efficiently?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">Feature fails or degrades severely under any realistic load; no progress indicators.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">Timeouts or slowdowns are common; users are left uncertain whether the system is working.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">Performs adequately for typical use; edge cases or high load cause noticeable friction.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">Handles expected load reliably; loading states keep users informed during delays.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">Performs flawlessly under heavy load; streaming or progressive results eliminate wait anxiety.</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-scalable-bg); color:var(--c-scalable)">3</span>
+            <span class="criterion-text">Does naming and labeling reflect the product's mental model and hierarchy consistently?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">Naming is inconsistent or contradicts established product terminology.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">Several labels deviate; users familiar with the product may feel confused.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">Naming is mostly aligned with the product's established vocabulary.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">Uses clear, industry-aligned terminology; hierarchy is consistently reflected in labels.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">Naming actively reinforces mental models; terminology could serve as a product glossary standard.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="criteria-group">
+        <div class="criteria-group-header">Future-proofing &amp; Extensibility</div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-scalable-bg); color:var(--c-scalable)">4</span>
+            <span class="criterion-text">Can the feature grow and evolve with minimal redesign?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">Architecture is rigid; any meaningful growth would require a full redesign.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">Several structural decisions will need to be revisited as the feature matures.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">Foundation is flexible; some areas will need restructuring as the product scales.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">Design accommodates anticipated evolution; new capabilities can be added without disruption.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">Architecture actively enables future growth; extensibility is a feature, not an afterthought.</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-scalable-bg); color:var(--c-scalable)">5</span>
+            <span class="criterion-text">Can users customize or extend the feature (e.g., APIs, plugin support)?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">No customization options exist; users cannot adapt the feature to their needs.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">Very limited customization; only superficial settings are exposed.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">Core customization is possible; roadmap indicates deeper extensibility ahead.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">Users can meaningfully configure and extend the feature for their workflows.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">Feature is a platform; users and partners can build on top of it with first-class APIs.</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-scalable-bg); color:var(--c-scalable)">6</span>
+            <span class="criterion-text">Are familiar terms and content structures reused rather than reinvented?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">Introduces entirely novel vocabulary or patterns with no clear rationale.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">Several concepts are reinvented when established conventions would have served better.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">Mostly leverages existing conventions; novel patterns have some justification.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">Consistently reuses familiar structures; reduces cognitive load for experienced users.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">New patterns introduced here strengthen the broader system and become reusable themselves.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BE TRUSTWORTHY -->
+    <div class="principle-panel" id="panel-trustworthy">
+      <div class="principle-header">
+        <span class="principle-tag" style="background:var(--c-trustworthy-bg); color:var(--c-trustworthy)">03 &mdash; Be Trustworthy</span>
+        <h2 class="principle-title">Always Communicate What's Happening</h2>
+        <p class="principle-desc">Promote clarity, inclusivity, and accessibility to foster trust and transparency in decision making. Create intuitive interfaces for users of varying skills, backgrounds, and needs. Ensure clarity on product functionality and data usage.</p>
+      </div>
+      <div class="section-label">Evaluation Criteria</div>
+      <div class="criteria-group">
+        <div class="criteria-group-header">Transparency &amp; Accessibility</div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-trustworthy-bg); color:var(--c-trustworthy)">1</span>
+            <span class="criterion-text">Does the feature make its processing and outputs transparent (e.g., data sources, model lineage, decision factors)?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">Outputs appear with no explanation of how they were produced.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">Very limited transparency; users must trust results without any supporting context.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">High-level explanations are available on request; key decisions are surfaced.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">Data sources, transformations, and logic are clearly surfaced and understandable.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">Full audit trail; model lineage, confidence scores, and decision factors are first-class UI.</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-trustworthy-bg); color:var(--c-trustworthy)">2</span>
+            <span class="criterion-text">Is the language aligned with product voice, clear, and inclusive for all users?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">Copy is confusing, jargon-heavy, or excludes non-technical users.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">Language is inconsistent or does not set expectations clearly across states.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">Language is generally clear and professional; most users understand what's happening.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">Copy is inclusive, actionable, and aligned with our voice and tone standards across all states.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">Language is a trust-builder; errors, empty states, and guidance all feel human and helpful.</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-trustworthy-bg); color:var(--c-trustworthy)">3</span>
+            <span class="criterion-text">Are learning resources (help docs, tutorials) easily accessible within the feature?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">No in-product help resources of any kind; users must search external documentation.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">Help exists but is hard to find, outdated, or not contextual to the current task.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">Basic help is accessible from within the feature; covers primary use cases.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">Contextual help is surfaced at the right moment; covers edge cases and advanced uses.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">In-product learning is embedded and progressive; users grow their expertise naturally.</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-trustworthy-bg); color:var(--c-trustworthy)">4</span>
+            <span class="criterion-text">For agentic experiences: does the feature explain AI-driven outputs, recommendations, and reasoning?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">AI outputs are delivered with no explanation or interpretability whatsoever.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">Some AI explanations on request, but they are shallow or technically opaque.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">High-level explanations are surfaced; users understand what happened at a basic level.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">Reasoning, data sources, and model choices are visible and understandable to the target audience.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">Full agentic transparency; orchestration logic, tools invoked, and confidence are first-class UI elements.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="criteria-group">
+        <div class="criteria-group-header">Security &amp; Compliance</div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-trustworthy-bg); color:var(--c-trustworthy)">5</span>
+            <span class="criterion-text">Does it follow industry best practices for security (e.g., role-based access, encryption)?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">Security controls are absent, implicit, or communicated nowhere in the UI.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">Basic controls exist but are invisible to users, reducing trust in enterprise contexts.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">Standard security controls are in place; some are surfaced in the UI when relevant.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">Security posture is clearly communicated; role-based access and data boundaries are visible.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">Security is a trust feature; boundaries, permissions, and compliance are proactively surfaced.</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-trustworthy-bg); color:var(--c-trustworthy)">6</span>
+            <span class="criterion-text">Are users clearly informed about data collection and options for configuring roles and access?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">Data collection is entirely opaque; users have no visibility or control.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">Information exists in policy documents but is not surfaced contextually in the UI.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">Data governance basics are communicated; access configuration is possible if not prominent.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">Data usage and access options are clearly explained at the right moments in the UI.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">Data governance is a first-class experience; users feel fully in control of their data.</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-trustworthy-bg); color:var(--c-trustworthy)">7</span>
+            <span class="criterion-text">Does the content and design support WCAG 2.2 standards (keyboard nav, screen reader, contrast)?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">Feature fails basic accessibility; cannot be navigated by keyboard or screen reader.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">Significant WCAG gaps; several elements have poor contrast or missing labels.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">Passes basic accessibility checks; some WCAG 2.2 criteria remain unverified.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">Keyboard navigation and screen reader compatibility verified; contrast passes AA.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">Accessibility tested with real assistive technology; meets or exceeds WCAG 2.2 AAA across all flows.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BE DELIGHTFUL -->
+    <div class="principle-panel" id="panel-delightful">
+      <div class="principle-header">
+        <span class="principle-tag" style="background:var(--c-delightful-bg); color:var(--c-delightful)">04 &mdash; Be Delightful</span>
+        <h2 class="principle-title">Engaging</h2>
+        <p class="principle-desc">Encourage bold and creative solutions in the design and implementation of the UX. Explore novel ways to solve user problems, experiment with cutting-edge technologies, and push the boundaries of what is currently accepted as the norm in user interfaces.</p>
+      </div>
+      <div class="section-label">Evaluation Criteria</div>
+      <div class="criteria-group">
+        <div class="criteria-group-header">Design Aesthetics &amp; Engagement</div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-delightful-bg); color:var(--c-delightful)">1</span>
+            <span class="criterion-text">Does the feature make complex tasks engaging rather than intimidating?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">Complex tasks feel overwhelming; no design choices reduce the sense of difficulty.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">Some complexity reduction, but tasks still feel burdensome for most users.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">The interface makes tasks approachable; complexity is acknowledged and managed.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">Complex tasks feel conversational or intuitive; the experience builds confidence.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">Complexity is invisible; users feel empowered, not burdened, by even the most advanced tasks.</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-delightful-bg); color:var(--c-delightful)">2</span>
+            <span class="criterion-text">Is it visually appealing and well-structured?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">Visual design is inconsistent, cluttered, or actively undermines the experience.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">Layout is functional but lacks visual polish; hierarchy or spacing is inconsistent.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">Clean and readable; visual design supports task completion without friction.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">Polished, modern, well-structured; visual design feels intentional and consistent.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">Visually distinctive and memorable; design quality raises the bar for the entire product.</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-delightful-bg); color:var(--c-delightful)">3</span>
+            <span class="criterion-text">Does the tone (copy, illustrations, animations) engage users while staying focused on their needs?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">Tone is robotic or detached; no personality or engagement in the experience.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">Some warmth present but inconsistent; tone gets in the way in some places.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">Friendly and professional throughout; tone is appropriate for the context.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">Tone is engaging and distinctly human; it makes the product feel alive without distraction.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">Tone creates a memorable character; users feel seen and supported across every touchpoint.</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-delightful-bg); color:var(--c-delightful)">4</span>
+            <span class="criterion-text">Does the experience create meaningful moments of truth that acknowledge user achievements?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">Completions go unacknowledged; users never feel a sense of progress or achievement.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">Basic confirmation exists but feels mechanical; no sense of accomplishment.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">Subtle moments of confirmation signal progress and support forward momentum.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">Meaningful micro-moments acknowledge user actions and highlight business value achieved.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">The experience celebrates milestones; users feel genuinely rewarded for their work.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="criteria-group">
+        <div class="criteria-group-header">Reduction of Cognitive Load</div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-delightful-bg); color:var(--c-delightful)">5</span>
+            <span class="criterion-text">Can users visually explore and manipulate data with ease?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">Data exploration requires coding or external tools; no visual affordances.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">Some visual outputs exist but are limited; interaction with data is clunky.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">Common data exploration tasks are visual and accessible to most users.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">Rich visual outputs (tables, charts) are easy to interact with; manipulation is direct.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">Data is a canvas; exploration feels natural, fast, and integrated into the user's workflow.</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-delightful-bg); color:var(--c-delightful)">6</span>
+            <span class="criterion-text">Is information grouped and presented to reduce decision fatigue (e.g., progressive disclosure)?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">All information is presented at once; overwhelming density with no hierarchy.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">Some grouping exists but information density is still high; users feel fatigued.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">Information is logically grouped; progressive disclosure reduces overwhelm in key places.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">Consistent progressive disclosure; users control depth and never feel bombarded.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">Information architecture actively reduces cognitive load; exploration feels effortless.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BE INFORMED -->
+    <div class="principle-panel" id="panel-informed">
+      <div class="principle-header">
+        <span class="principle-tag" style="background:var(--c-informed-bg); color:var(--c-informed)">05 &mdash; Be Informed</span>
+        <h2 class="principle-title">Listen &amp; Learn from Users</h2>
+        <p class="principle-desc">Design with continuous learning from user interactions and behaviors in mind. Implement analytics and feedback mechanisms to gather data on how users engage with the product and where they encounter difficulties. Develop processes to integrate these discoveries into product enhancements and iterations.</p>
+      </div>
+      <div class="section-label">Evaluation Criteria</div>
+      <div class="criteria-group">
+        <div class="criteria-group-header">Key Results &amp; Feedback Loops</div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-informed-bg); color:var(--c-informed)">1</span>
+            <span class="criterion-text">Can users provide feedback on the feature and its documentation, and is it used for iteration?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">No feedback mechanism; user insights are never collected from within the product.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">Feedback can be submitted but is siloed; no clear path back to the product team.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">Feedback is collected and reviewed; there is an informal process for acting on insights.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">Feedback flows directly to the product team with a clear process for integrating findings.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">Feedback loops are closed; users see evidence that their input directly shaped product changes.</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-informed-bg); color:var(--c-informed)">2</span>
+            <span class="criterion-text">Does the feature have goals and metrics (e.g., OKRs, Pendo) set up to track its success?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">No analytics or success metrics defined; the team has no visibility into usage.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">Some basic event tracking exists but is insufficient for meaningful analysis.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">Core success metrics are defined and tracked; insights inform prioritization decisions.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">Metrics are tied to OKRs; analytics coverage is comprehensive and regularly reviewed.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">A rich analytics framework enables continuous improvement; metrics drive every design decision.</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-informed-bg); color:var(--c-informed)">3</span>
+            <span class="criterion-text">Is the proposed design evidence-backed (e.g., researched or user tested)?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">Design decisions are purely intuition-based with no supporting research or data.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">Secondary research informed some decisions, but no validation with real users has occurred.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">Design is grounded in competitive analysis or domain expertise; user testing is planned.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">Key decisions validated with actual users; research findings are documented and shared.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">Continuous research rhythm; every major decision is grounded in evidence from target users.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BE OPEN & CONNECTED -->
+    <div class="principle-panel" id="panel-open">
+      <div class="principle-header">
+        <span class="principle-tag" style="background:var(--c-open-bg); color:var(--c-open)">06 &mdash; Be Open &amp; Connected</span>
+        <h2 class="principle-title">Interoperability &amp; Integration</h2>
+        <p class="principle-desc">Design with integration in mind. Ensure your product can seamlessly connect with other cloud services, APIs, and third-party tools. Provide clear and user-friendly integration points for a cohesive ecosystem.</p>
+      </div>
+      <div class="section-label">Evaluation Criteria</div>
+      <div class="criteria-group">
+        <div class="criteria-group-header">Standardization &amp; Open Formats</div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-open-bg); color:var(--c-open)">1</span>
+            <span class="criterion-text">Does it support industry standards for interoperability (e.g., SQL, JSON, Parquet)?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">Uses proprietary formats only; no support for industry-standard data exchange.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">Limited standard support; some key formats are missing or partially implemented.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">Core industry standards are supported; additional formats are on the roadmap.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">Comprehensive support for relevant standards; interoperability is a design goal.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">Feature is a model of interoperability; it actively reduces lock-in and broadens ecosystem reach.</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-open-bg); color:var(--c-open)">2</span>
+            <span class="criterion-text">Does the design maintain consistency across browsers, devices, and deployment types?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">Significant rendering or behavioral differences across environments; not cross-platform.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">Works in primary environment; degrades noticeably on other browsers or platforms.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">Consistent across major desktop browsers; mobile or edge cases are not fully validated.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">Tested and consistent across key browsers and deployment types.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">Flawless cross-platform experience; consistency is verified across all supported environments.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="criteria-group">
+        <div class="criteria-group-header">Ecosystem Integration</div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-open-bg); color:var(--c-open)">3</span>
+            <span class="criterion-text">Does it expose APIs for data exchange with other tools and services?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">No APIs exposed; feature is entirely closed to external integration.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">API access is planned but not yet available; integration requires workarounds.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">Core functionality is accessible via API; documentation is available.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">Comprehensive API coverage; developers can build meaningful integrations with ease.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">API-first design; the feature is as much a platform as a product.</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="criterion">
+          <button class="criterion-trigger">
+            <span class="criterion-icon" style="background:var(--c-open-bg); color:var(--c-open)">4</span>
+            <span class="criterion-text">Does it seamlessly connect with partner offerings, AI tools, and third-party services?</span>
+            <svg class="criterion-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 10 12 6"/></svg>
+          </button>
+          <div class="criterion-body">
+            <div class="criterion-rubric">
+              <div class="rubric-cell score-1"><span class="rubric-score">1</span><span class="rubric-label">Poor</span><span class="rubric-desc">No third-party integrations; the feature operates in complete isolation.</span></div>
+              <div class="rubric-cell score-2"><span class="rubric-score">2</span><span class="rubric-label">Needs Work</span><span class="rubric-desc">Very limited integration; connecting to other tools requires significant manual effort.</span></div>
+              <div class="rubric-cell score-3"><span class="rubric-score">3</span><span class="rubric-label">Adequate</span><span class="rubric-desc">Key integrations are supported; ecosystem connectivity is present but not prominent.</span></div>
+              <div class="rubric-cell score-4"><span class="rubric-score">4</span><span class="rubric-label">Good</span><span class="rubric-desc">Strong ecosystem integration; connecting to partner tools is discoverable and straightforward.</span></div>
+              <div class="rubric-cell score-5"><span class="rubric-score">5</span><span class="rubric-label">Exceeded</span><span class="rubric-desc">Integration is a first-class feature; the product feels like the center of the user's ecosystem.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div style="max-width:1200px; margin: 0 auto; padding: 0 32px;">
+  <div style="height:1px; background:var(--border);"></div>
+</div>
+
+<section class="rubric-section" style="padding-top: 64px;">
+  <div class="rubric-section-header">
+    <h2 class="rubric-section-title">Scoring Rubric</h2>
+    <p class="rubric-section-desc">Each criterion is scored on a 1&ndash;5 scale. Scores are averaged per principle to produce an overall principle score out of 10 (averaged across two sub-groups, then normalized). Use this rubric consistently across reviewers for comparable results.</p>
+  </div>
+
+  <div class="rubric-scale">
+    <div class="scale-card scale-1">
+      <span class="scale-num">1</span>
+      <span class="scale-name">Met None</span>
+      <p class="scale-meaning">The criterion is not addressed. Significant work is needed before this can be considered a quality experience.</p>
+    </div>
+    <div class="scale-card scale-2">
+      <span class="scale-num">2</span>
+      <span class="scale-name">Met Some</span>
+      <p class="scale-meaning">Partial progress, but the gaps are meaningful and will create friction for real users in typical scenarios.</p>
+    </div>
+    <div class="scale-card scale-3">
+      <span class="scale-num">3</span>
+      <span class="scale-name">Met Most</span>
+      <p class="scale-meaning">Adequate for release. The primary use cases are handled, though edge cases or polish items remain.</p>
+    </div>
+    <div class="scale-card scale-4">
+      <span class="scale-num">4</span>
+      <span class="scale-name">Met All</span>
+      <p class="scale-meaning">Good. All stated criteria are satisfied. The experience is solid and meets expectations across the board.</p>
+    </div>
+    <div class="scale-card scale-5">
+      <span class="scale-num">5</span>
+      <span class="scale-name">Exceeded</span>
+      <p class="scale-meaning">Excellent. This criterion is handled in a way that sets a new standard and creates a distinctly better experience.</p>
+    </div>
+  </div>
+
+  <div style="margin-bottom: 24px;">
+    <h3 style="font-size:16px; font-weight:600; color:var(--text-primary); margin-bottom:16px; letter-spacing:-0.01em;">How to Run a Design Review</h3>
+  </div>
+  <div class="how-to-use">
+    <div>
+      <div class="how-step-num">Step 01</div>
+      <div class="how-step-title">Align on scope</div>
+      <p class="how-step-desc">Identify the feature or user flow under review. Define the customer goal, business goal, and the relevant user tasks before scoring begins.</p>
+    </div>
+    <div>
+      <div class="how-step-num">Step 02</div>
+      <div class="how-step-title">Score each criterion</div>
+      <p class="how-step-desc">Use the 1&ndash;5 scale for every applicable criterion. If a criterion does not apply, mark it N/A and note the rationale. Provide written observations alongside scores.</p>
+    </div>
+    <div>
+      <div class="how-step-num">Step 03</div>
+      <div class="how-step-title">Synthesize and prioritize</div>
+      <p class="how-step-desc">Average scores within each principle. Use the pattern of low scores to identify where design investment will have the highest impact on the overall experience.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  Design Principles &mdash; Design Review Framework
+</footer>
+
+<script>
+  function switchTo(target) {
+    document.querySelectorAll('.nav-pill').forEach(pill => {
+      pill.classList.toggle('active', pill.dataset.target === target);
+    });
+    document.querySelectorAll('.sidebar-item').forEach(item => {
+      item.classList.toggle('active', item.dataset.target === target);
+    });
+    document.querySelectorAll('.principle-panel').forEach(panel => {
+      panel.classList.toggle('active', panel.id === `panel-${target}`);
+    });
+    document.querySelector('.main-layout').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  document.querySelectorAll('[data-target]').forEach(el => {
+    el.addEventListener('click', () => switchTo(el.dataset.target));
+  });
+
+  document.querySelectorAll('.criterion-trigger').forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      const criterion = trigger.parentElement;
+      const isOpen = criterion.classList.contains('open');
+      trigger.closest('.criteria-group').querySelectorAll('.criterion').forEach(c => {
+        c.classList.remove('open');
+      });
+      if (!isOpen) criterion.classList.add('open');
+    });
+  });
+</script>
+
+</body>
+</html>
